@@ -1,0 +1,17 @@
+{
+    "name": "blindlee1324/twitcasting-board",
+    "description": "board app using twitcasting's oauth api",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "shucream0117/twitcasting-oauth": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.1"
+    },
+    "autoload": {
+    	"psr-4": {
+    		"Model\\": "Model/"
+    	}
+    }
+}
