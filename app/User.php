@@ -1,13 +1,13 @@
 <?php
 
-namespace Model;
+namespace App;
 
 class User{
 	/*
 		@param string $id
 		@return array(or false if the result is an empty set)
 	*/
-	public static function findwithId($id) {
+	public static function findWithId($id) {
 		$pdo = new Connection();
 		$sql = 'SELECT * FROM users WHERE id = ' . $id . ' limit 1';
 		$stmt = $pdo->query($sql);
@@ -45,5 +45,13 @@ class User{
 		$pdo = null;
 		
 		return $result;
+	}
+	
+	public static function setPassword($id, $password) {
+		$pdo = new Connection();
+		$sql = 'UPDATE users SET password= ? WHERE id= ?';
+		$pdo->prepare($sql)->execute([$password, $id]);
+		
+		$pdo = null;
 	}
 }

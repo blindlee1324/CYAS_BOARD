@@ -3,7 +3,7 @@ use Shucream0117\TwitCastingOAuth\GrantFlow\AuthCodeGrant;
 use Shucream0117\TwitCastingOAuth\ApiExecutor\AppExecutor;
 use Shucream0117\TwitCastingOAuth\ApiExecutor\UserExecutor;
 use Shucream0117\TwitCastingOAuth\Entities\AccessToken;
-use Model\User;
+use App\User;
 session_start();
 if(!isset($_SESSION['id'])) {
 	// $cId, $cSecret, $callbackURL required
@@ -36,18 +36,20 @@ if(!isset($_SESSION['id'])) {
 		$response = $executor->get("verify_credentials");
 		$userInfo = json_decode($response->getBody()->getContents(), true);
 		
-		if(empty(User::findwithId($userInfo["user"]["id"]))) {
-			User::insert($userInfo["user"]["id"], $userInfo["user"]["screen_id"], $userInfo["user"]["name"], $userInfo["user"]["image"], $userInfo["user"]["profile"]);
+		if(empty(User::findWithId($userInfo["user"]["id"]))) {
+			User::insert((int)$userInfo["user"]["id"], $userInfo["user"]["screen_id"], $userInfo["user"]["name"], $userInfo["user"]["image"], $userInfo["user"]["profile"]);
 		} 
 		
+		// for Authentication
+		User::setPassword($userInfo["user"]["id"], $_SESSION['csrfToken']);
 		$_SESSION['id'] = $userInfo["user"]["id"];
 		
 		header('Location: /');
 	}
 	// Login Session
 } else {
-	$result = User::findwithId($_SESSION['id']);
+	$result = User::findWithId($_SESSION['id']);
 	
 	// print name and screen_id on nav bar
-	print_r('<a>'.$result['name'].' (@'.$result['screen_id'].')</a>');
+	print_r('<a class="disabled">'.$result['name'].' (@'.$result['screen_id'].')</a>');
 }

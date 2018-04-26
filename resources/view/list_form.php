@@ -1,3 +1,6 @@
+<?php
+	$paginator = new App\Paginator(intval(App\Post::countAll()));
+?>
 <table class="table table-striped">
   <thead>
     <tr>
@@ -5,7 +8,7 @@
       <th scope="col" style="width: 55%">TITLE</th>
       <th scope="col" style="width: 20%">WRITER</th>
       <th scope="col" style="width: 15%">DATE</th>
-	  <th scope="col" style="width: 5%">V.C</th>
+	  <th scope="col" style="width: 5%">HIT</th>
     </tr>
   </thead>
   <tbody>
@@ -32,3 +35,16 @@
     </tr>
   </tbody>
 </table>
+<div class="row">
+	<a href="/write.php"class="btn btn-primary pull-right">WRITE</a>
+</div>
+<nav aria-label="page navigation">
+	<div class="text-center">
+<?php
+	if(empty($_GET['page'])) {
+		$_GET['page'] = 1;
+	}
+	$paginator->render(intval($_GET['page']));
+?>
+	</div>
+</nav>
