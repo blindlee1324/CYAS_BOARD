@@ -44,6 +44,12 @@ class Post {
 	// read a post with id
 	public static function read($id) {
 		$pdo = new Connection();
+		$sql = 'select id, title, content, user_screen_id, user_id, user_name, user_image, hit, created from posts where id='.$id;
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute();
+		$result = $stmt->fetch(\PDO::FETCH_ASSOC);
+		
+		return $result;
 	}
 	
 	public static function countAll() {
@@ -52,5 +58,14 @@ class Post {
 		$result = $pdo->query($sql)->fetchColumn();
 		
 		return (int)$result;
+	}
+	
+	public static function hit($id) {
+		$pdo = new Connection();
+		$sql = 'update posts set hit = hit + 1 where id =' . $id;
+		$result = $pdo->query($sql);
+		
+		$result = null;
+		$pdo = null;
 	}
 }

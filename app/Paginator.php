@@ -61,6 +61,8 @@ class Paginator {
 		// html rendering
 		$html       = '<ul class="pagination pagination-sm justify-content-center">';
 		
+		// search condition
+		$search_uri = ($search_type == null && $keyword == null) ? '' : $search_uri = '&search_type='.$search_type.'&keyword='.$keyword;
 		
 		// step 10 pages next (10 is default. $pageRange)
 		if($currentPage > 1) {
@@ -68,34 +70,27 @@ class Paginator {
 			if($previous < 1) {
 				$previous = 1;
 			}
-			$html       .= '<li><a href="?page='.($previous).'">&laquo;</a></li>';
+			$html       .= '<li><a href="?page='.($previous).($search_uri).'">&laquo;</a></li>';
 		}else {
 			$html		.= '<li class="disabled"><span>&laquo;</span></li>';
 		}
 		
 		// back to page 1
 		if($startPage > 1) {
-			$html       .= '<li><a href="?page=1">1</a></li>';
+			$html       .= '<li><a href="?page=1'.$search_uri.'">1</a></li>';
 			$html       .= '<li class="page-item disabled"><span>&hellip;</span></li>';
 		}
 		
 		// page buttons
-		if($search_type != null && $keyword != null) {
-			for($i = $startPage; $i <= $endPage; $i++) {
-				$class = ($currentPage == $i) ? ' class="active"' : "";
-				$html       .= '<li'.$class.'><a href="?search_type='.$search_type.'&keyword='.$keyword.'&page='.($i).'">'.$i.'</a></li>';
-			}
-		} else {
-			for($i = $startPage; $i <= $endPage; $i++) {
-				$class = ($currentPage == $i) ? ' class="active"' : "";
-				$html       .= '<li'.$class.'><a href="?page='.($i).'">'.$i.'</a></li>';
-			}
+		for($i = $startPage; $i <= $endPage; $i++) {
+			$class = ($currentPage == $i) ? ' class="active"' : "";
+			$html       .= '<li'.$class.'><a href="?page='.($i).($search_uri).'">'.$i.'</a></li>';
 		}
 		
 		// jump to end page
 		if($endPage < $this->totalPages) {
 			$html       .= '<li class="page-item disabled"><span>&hellip;</span></li>';
-			$html       .= '<li><a href="?page='.$this->totalPages.'">'.$this->totalPages.'</a></li>';
+			$html       .= '<li><a href="?page='.$this->totalPages.$search_uri.'">'.$this->totalPages.'</a></li>';
 		}
 		
 		// back 10 pages
@@ -104,7 +99,7 @@ class Paginator {
 			if($next > $this->totalPages) {
 				$next = $this->totalPages;
 			}
-			$html       .= '<li><a href="?page='.($next).'">&raquo;</a></li>';
+			$html       .= '<li><a href="?page='.($next).($search_uri).'">&raquo;</a></li>';
 		} else {
 			$html       .= '<li class="disabled"><span>&raquo;</span></li>';
 		}
@@ -143,25 +138,16 @@ class Paginator {
 						</tr>
 					  </thead>
 					  <tbody>';
-		if($search_type != null && $keyword != null) {
-			foreach($result as $post) {
-				$html .= '<tr>';
-				$html .= '<th scope="row">'.$post['id'].'</th>';
-				$html .= '<td>'. $post['title'] .'</td>';
-				$html .= '<td><img src='.$post['user_image'].' height=25 width=25>'. $post['user_name'] .'(@'.$post['user_screen_id'].')</td>';
-				$html .= '<td>'. $post['created'] .'</td>';
-				$html .= '<td>'. $post['hit'] .'</td>';
-			}
-		} else {
-			foreach($result as $post) {
-				$html .= '<tr>';
-				$html .= '<th scope="row">'.$post['id'].'</th>';
-				$html .= '<td>'. $post['title'] .'</td>';
-				$html .= '<td><img src='.$post['user_image'].' height=25 width=25>'. $post['user_name'] .'(@'.$post['user_screen_id'].')</td>';
-				$html .= '<td>'. $post['created'] .'</td>';
-				$html .= '<td>'. $post['hit'] .'</td>';
-			}
+		
+		foreach($result as $post) {
+			$html .= '<tr>';
+			$html .= '<th scope="row">'.$post['id'].'</th>';
+			$html .= '<td><a href=/read.php?no='. $post['id'] .'>'. $post['title'] .'</td>';
+			$html .= '<td><img src='.$post['user_image'].' height=25 width=25>'. $post['user_name'] .'(@'.$post['user_screen_id'].')</td>';
+			$html .= '<td>'. $post['created'] .'</td>';
+			$html .= '<td>'. $post['hit'] .'</td>';
 		}
+	
 		$html .= '</tbody>
 			</table>'; 
 		
